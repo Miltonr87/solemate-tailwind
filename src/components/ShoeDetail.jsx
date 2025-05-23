@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QTY, SIZES } from "../constant";
 import { Select } from "./Select";
 import { CepSelect } from "./CepSelect";
@@ -24,12 +24,34 @@ export function ShoeDetail({ shoe, onClickAdd }) {
   });
 
   const [cepError, setCepError] = useState("");
+  const [address, setAddress] = useState(null);
 
   const validateCep = (value) => /^[0-9]{8}$/.test(value.replace(/\D/g, ""));
 
   const handleCepChange = (value) => {
     setForm((prev) => ({ ...prev, cep: value }));
-    setCepError(validateCep(value) ? "" : "Invalid CEP (use 8 digits)");
+    setAddress(null); // reset address
+    if (!validateCep(value)) {
+      setCepError("Invalid CEP (use 8 digits)");
+      return;
+    }
+
+    setCepError("");
+
+    fetch(`https://viacep.com.br/ws/${value.replace(/\D/g, "")}/json/`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.erro) {
+          setCepError("CEP not found");
+          setAddress(null);
+        } else {
+          setAddress(data);
+        }
+      })
+      .catch(() => {
+        setCepError("Error fetching CEP");
+        setAddress(null);
+      });
   };
 
   return (
@@ -46,7 +68,6 @@ export function ShoeDetail({ shoe, onClickAdd }) {
         <div className="text-5xl font-black md:text-9xl">{shoe.title}</div>
         <div className="font-medium md:text-xl">{shoe.description}</div>
 
-        {/* Price */}
         <div className="text-3xl font-extrabold md:text-6xl">
           {shoe.price} $
         </div>
@@ -85,7 +106,7 @@ export function ShoeDetail({ shoe, onClickAdd }) {
           )}
         </div>
 
-        {/* CEP */}
+        {/* CEP and address */}
         <div className="flex flex-wrap gap-4">
           <Select
             value={form.qty}
@@ -109,6 +130,11 @@ export function ShoeDetail({ shoe, onClickAdd }) {
             />
             {cepError && (
               <span className="mt-1 text-sm text-red-500">{cepError}</span>
+            )}
+            {address && (
+              <span className="mt-1 text-sm text-green-600">
+                {`${address.logradouro}, ${address.bairro}, ${address.localidade} - ${address.uf}`}
+              </span>
             )}
           </div>
         </div>
