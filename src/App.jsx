@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Nav } from "./components/Nav";
-import { NewArrivalsSection } from "./components/NewArrivalsSection";
+import { OtherModelsSection } from "./components/OtherModelsSection";
 import { ShoeDetail } from "./components/ShoeDetail";
 import { Sidebar } from "./components/Sidebar";
 import { SHOE_LIST } from "./constant";
@@ -71,7 +71,7 @@ export function App() {
     <div className="animate-fadeIn p-10 dark:bg-night xl:px-24">
       <Nav onClickShoppingBtn={() => setIsSidebarOpen(true)} />
       <ShoeDetail shoe={currentShoe} onClickAdd={addToCart} />
-      <NewArrivalsSection items={SHOE_LIST} onClickCard={setCurrentShoe} />
+      <OtherModelsSection items={SHOE_LIST} onClickCard={setCurrentShoe} />
       <Sidebar
         isOpen={isSidebarOpen}
         onClickClose={() => setIsSidebarOpen(false)}
