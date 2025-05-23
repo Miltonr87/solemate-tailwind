@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { QTY, SIZES } from "../constant";
 import { Select } from "./Select";
 import { CepSelect } from "./CepSelect";
+import { validateCep, fetchCepData } from "../utils/cepUtil";
 
 const COLORS = {
   "#FF0000": "Red",
@@ -24,34 +25,26 @@ export function ShoeDetail({ shoe, onClickAdd }) {
   });
 
   const [cepError, setCepError] = useState("");
-  const [address, setAddress] = useState(null);
+  const [cepData, setCepData] = useState(null);
 
-  const validateCep = (value) => /^[0-9]{8}$/.test(value.replace(/\D/g, ""));
-
-  const handleCepChange = (value) => {
+  const handleCepChange = async (value) => {
     setForm((prev) => ({ ...prev, cep: value }));
-    setAddress(null); // reset address
-    if (!validateCep(value)) {
+    const isValid = validateCep(value);
+
+    if (!isValid) {
       setCepError("Invalid CEP (use 8 digits)");
+      setCepData(null);
       return;
     }
 
-    setCepError("");
-
-    fetch(`https://viacep.com.br/ws/${value.replace(/\D/g, "")}/json/`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.erro) {
-          setCepError("CEP not found");
-          setAddress(null);
-        } else {
-          setAddress(data);
-        }
-      })
-      .catch(() => {
-        setCepError("Error fetching CEP");
-        setAddress(null);
-      });
+    try {
+      const data = await fetchCepData(value);
+      setCepData(data);
+      setCepError("");
+    } catch {
+      setCepError("CEP not found");
+      setCepData(null);
+    }
   };
 
   return (
@@ -106,7 +99,7 @@ export function ShoeDetail({ shoe, onClickAdd }) {
           )}
         </div>
 
-        {/* CEP and address */}
+        {/* Quantity, Size, CEP */}
         <div className="flex flex-wrap gap-4">
           <Select
             value={form.qty}
@@ -131,12 +124,24 @@ export function ShoeDetail({ shoe, onClickAdd }) {
             {cepError && (
               <span className="mt-1 text-sm text-red-500">{cepError}</span>
             )}
-            {address && (
-              <span className="mt-1 text-sm text-green-600">
-                {`${address.logradouro}, ${address.bairro}, ${address.localidade} - ${address.uf}`}
-              </span>
-            )}
           </div>
+        </div>
+
+        {/* Display user CEP */}
+        <div className="mt-6 space-y-1 text-sm">
+          {cepData && (
+            <div className="text-xs text-gray-400">
+              <div>
+                <strong>Address:</strong> {cepData.logradouro}
+              </div>
+              <div>
+                <strong>Neighborhood:</strong> {cepData.bairro}
+              </div>
+              <div>
+                <strong>City:</strong> {cepData.localidade} - {cepData.uf}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
