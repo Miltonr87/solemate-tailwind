@@ -5,6 +5,15 @@ import nike4 from "./assets/n4-min.png";
 
 export const SIZES = [41, 42, 43, 44, 45, 46, 47];
 export const QTY = [1, 2, 3, 4, 5];
+export const COLORS = [
+  "#FF0000",
+  "#0000FF",
+  "#00FF00",
+  "#000000",
+  "#FFFFFF",
+  "#F97316",
+  "#8B5CF6",
+];
 
 export const SHOE_LIST = [
   {

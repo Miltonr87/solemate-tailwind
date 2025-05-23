@@ -1,6 +1,6 @@
 import { twMerge } from "tw-merge";
 
-export function Input({
+export function CepSelect({
   title,
   value,
   onChange,
