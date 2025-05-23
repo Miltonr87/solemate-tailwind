@@ -40,11 +40,11 @@ export function App() {
     setCartItems(updatedCartItems);
   };
 
-  // Updated addToCart now receives color and cep
-  const addToCart = (product, qty, size, color, cep) => {
+  const addToCart = (product, form) => {
+    const { qty, size, color, cep } = form;
+
     if (qty && size && color && cep) {
       const updatedCartItems = [...cartItems];
-      // Find if the exact same product with same options already exists in cart
       const existingItemIndex = cartItems.findIndex(
         (item) =>
           item.product.id === product.id &&
@@ -54,10 +54,8 @@ export function App() {
       );
 
       if (existingItemIndex > -1) {
-        // If found, update quantity
         updatedCartItems[existingItemIndex].qty = qty;
       } else {
-        // Otherwise, add new item
         updatedCartItems.push({ product, qty, size, color, cep });
       }
 

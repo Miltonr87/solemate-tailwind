@@ -20,21 +20,17 @@ export function ShoeDetail({ shoe, onClickAdd }) {
     qty: null,
     size: null,
     color: null,
-    cep: null,
+    cep: "",
   });
-  console.log("formADO", form);
-  const [cep, setCep] = useState("");
+
   const [cepError, setCepError] = useState("");
 
   const validateCep = (value) => /^[0-9]{8}$/.test(value.replace(/\D/g, ""));
 
-  const handleCepChange = (e) => {
-    const value = e.target.value;
-    setCep(value);
+  const handleCepChange = (value) => {
+    setForm((prev) => ({ ...prev, cep: value }));
     setCepError(validateCep(value) ? "" : "Invalid CEP (use 8 digits)");
   };
-
-  console.log("form", form.color);
 
   return (
     <div className="flex flex-col space-y-4 dark:text-white lg:flex-row-reverse">
@@ -105,9 +101,8 @@ export function ShoeDetail({ shoe, onClickAdd }) {
           />
           <div className="flex flex-col">
             <CepSelect
-              id="cep"
               type="text"
-              value={cep}
+              value={form.cep}
               onChange={handleCepChange}
               placeholder="CEP"
               className="w-32"

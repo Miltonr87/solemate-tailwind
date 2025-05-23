@@ -18,6 +18,7 @@ export function CartItem({
   item: { product, qty, size, color, cep },
   onClickTrash,
 }) {
+  console.log("item", product);
   return (
     <div
       className={
