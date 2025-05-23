@@ -16,7 +16,13 @@ const COLORS = {
 };
 
 export function ShoeDetail({ shoe, onClickAdd }) {
-  const [form, setForm] = useState({ qty: null, size: null, color: null });
+  const [form, setForm] = useState({
+    qty: null,
+    size: null,
+    color: null,
+    cep: null,
+  });
+  console.log("formADO", form);
   const [cep, setCep] = useState("");
   const [cepError, setCepError] = useState("");
 
@@ -27,6 +33,8 @@ export function ShoeDetail({ shoe, onClickAdd }) {
     setCep(value);
     setCepError(validateCep(value) ? "" : "Invalid CEP (use 8 digits)");
   };
+
+  console.log("form", form.color);
 
   return (
     <div className="flex flex-col space-y-4 dark:text-white lg:flex-row-reverse">
@@ -81,7 +89,7 @@ export function ShoeDetail({ shoe, onClickAdd }) {
           )}
         </div>
 
-        {/* Other selects & CEP */}
+        {/* CEP */}
         <div className="flex flex-wrap gap-4">
           <Select
             value={form.qty}
@@ -110,10 +118,10 @@ export function ShoeDetail({ shoe, onClickAdd }) {
           </div>
         </div>
 
-        {/* Buttons */}
+        {/* Action Buttons */}
         <div className="space-x-10">
           <button
-            onClick={() => onClickAdd(shoe, form.qty, form.size, form.color)}
+            onClick={() => onClickAdd(shoe, form)}
             className="btn-press-anim h-14 w-44 bg-black text-white hover:bg-gray-900 active:bg-gray-700 dark:bg-white dark:text-black"
           >
             Add to bag

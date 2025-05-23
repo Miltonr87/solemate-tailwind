@@ -36,20 +36,33 @@ export function App() {
     updatedCartItems.splice(existingItemIndex, 1);
     setCartItems(updatedCartItems);
   };
-  const addToCart = (product, qty, size) => {
-    if (qty && size) {
+
+  // Updated addToCart now receives color and cep
+  const addToCart = (product, qty, size, color, cep) => {
+    if (qty && size && color && cep) {
       const updatedCartItems = [...cartItems];
+      // Find if the exact same product with same options already exists in cart
       const existingItemIndex = cartItems.findIndex(
-        (item) => item.product.id === product.id,
+        (item) =>
+          item.product.id === product.id &&
+          item.size === size &&
+          item.color === color &&
+          item.cep === cep,
       );
+
       if (existingItemIndex > -1) {
+        // If found, update quantity
         updatedCartItems[existingItemIndex].qty = qty;
-        updatedCartItems[existingItemIndex].size = size;
       } else {
-        updatedCartItems.push({ product, qty, size });
+        // Otherwise, add new item
+        updatedCartItems.push({ product, qty, size, color, cep });
       }
 
       setCartItems(updatedCartItems);
+    } else {
+      console.warn(
+        "Please select quantity, size, color, and enter a valid CEP.",
+      );
     }
   };
 
@@ -57,18 +70,12 @@ export function App() {
     <div className="animate-fadeIn p-10 dark:bg-night xl:px-24">
       <Nav onClickShoppingBtn={() => setIsSidebarOpen(true)} />
       <ShoeDetail shoe={currentShoe} onClickAdd={addToCart} />
-      <NewArrivalsSection
-        items={SHOE_LIST}
-        onClickCard={setCurrentShoe}
-      />
+      <NewArrivalsSection items={SHOE_LIST} onClickCard={setCurrentShoe} />
       <Sidebar
         isOpen={isSidebarOpen}
         onClickClose={() => setIsSidebarOpen(false)}
       >
-        <Cart
-          cartItems={cartItems}
-          onClickTrash={removeFromCart}
-        />
+        <Cart cartItems={cartItems} onClickTrash={removeFromCart} />
       </Sidebar>
       <div className=" fixed bottom-4 right-4">
         <button
