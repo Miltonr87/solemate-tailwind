@@ -7,6 +7,9 @@ import { SHOE_LIST } from "./constant";
 import { Cart } from "./components/Cart";
 import { BiMoon, BiSun } from "react-icons/bi";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentShoe, setCurrentShoe] = useState(SHOE_LIST[0]);
@@ -60,7 +63,7 @@ export function App() {
 
       setCartItems(updatedCartItems);
     } else {
-      console.warn(
+      toast.error(
         "Please select quantity, size, color, and enter a valid CEP.",
       );
     }
@@ -77,7 +80,7 @@ export function App() {
       >
         <Cart cartItems={cartItems} onClickTrash={removeFromCart} />
       </Sidebar>
-      <div className=" fixed bottom-4 right-4">
+      <div className="fixed bottom-4 right-4">
         <button
           onClick={toggleDarkMode}
           className="rounded-full bg-night-50 px-4 py-2 text-white shadow-lg dark:bg-white dark:text-night"
@@ -86,6 +89,7 @@ export function App() {
           <BiMoon className="dark:hidden" />
         </button>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
